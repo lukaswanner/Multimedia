@@ -105,7 +105,6 @@ def main():
 
         heapq.heappush(heap,fused)
 
-    print(heap[0].left.left.left.left.char)
 
 
 
