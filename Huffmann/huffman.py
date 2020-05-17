@@ -13,12 +13,14 @@
 
 
 import heapq
+import math
+from functools import reduce
 
 
 class node:
 
-    def __init__(self, char, prob):
-        self.prob = prob
+    def __init__(self, char, freq):
+        self.freq = freq
         self.char = char
         self.left = None
         self.right = None
@@ -30,7 +32,7 @@ class node:
         self.right = node
 
     def __lt__(self, other):
-        return self.prob < other.prob
+        return self.freq < other.freq
 
     def __repr__(self):
         return self.char
@@ -57,11 +59,67 @@ def read_text(fname):
 # ergibt sich entrpy = 2.3378 und meanLength = 2.39.
 
 def huffman(probs):
+    #########test value########
+    P = [0.05, 0.03, 0.17, 0.23, 0.01, 0.32, 0.19]
+    A = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    probs = dict(zip(A,P))
+    #########test value########
+    
+    copy_probs = probs.copy()
     code = {}
     entropy = 0
     meanLength = 0
+    heap = []
+
+    while len(probs) != 0:
+        temp = min(probs.values())
+        res = [key for key in probs if probs[key] == temp]
+
+        for items in res:
+            new_node = node(items, probs.pop(items))
+            heapq.heappush(heap, new_node)
+
+    # for keys in heap:
+    #     print(str(keys) + ": " + str(keys.freq))
+
+    while len(heap) > 1:
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+
+        freq = left.freq+ right.freq
+        fused = node("None",freq)
+        fused.setLeft(left)
+        fused.setRight(right)
+
+        heapq.heappush(heap,fused)
+
+    recursive_get_code(heap[0], code, "")
+
+    for key in code:
+        print(key + ": " + str(len(code[key])))
+
+    for prob in copy_probs.values():
+        entropy += prob * -math.log2(prob)
+
+    len_of_values = map(lambda x: len(x), code.values())
+
+    meanLength = sum(len_of_values) / len(code)
+    print(entropy)
+    print(meanLength)
 
     return code, entropy, meanLength
+
+
+def recursive_get_code(root, code, current_code):
+    if (root == None): 
+        return
+
+    if (root.char != "None"):
+        code[root.char] = current_code
+        return
+    
+    recursive_get_code(root.left, code, current_code + "0")
+    recursive_get_code(root.right, code, current_code + "1")
 
 
 def main():
@@ -78,35 +136,8 @@ def main():
     for keys in dic:
         probability[keys] = dic.get(keys) / sum(dic.values())
 
-
-    heap = []
-    temp = min(dic.values())
-    res = [key for key in dic if dic[key] == temp]
-    print(res)
-    while len(dic) != 0:
-        temp = min(dic.values())
-        res = [key for key in dic if dic[key] == temp]
-
-        for items in res:
-            new_node = node(items, dic.pop(items))
-            heapq.heappush(heap, new_node)
-
-    for keys in heap:
-        print(str(keys) + ": " + str(keys.prob))
-
-    while len(heap) > 1:
-        left = heapq.heappop(heap)
-        right = heapq.heappop(heap)
-
-        prob = left.prob+ right.prob
-        fused = node("None",prob)
-        fused.setLeft(left)
-        fused.setRight(right)
-
-        heapq.heappush(heap,fused)
-
-
-
+    huffman(probability)
+    
 
 # code, entropy, meanLength = huffman(probs)
 
