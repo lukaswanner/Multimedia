@@ -130,7 +130,7 @@ def main():
     txt = file.read()
     dic = {}
 
-    for i in range(32, 127):
+    for i in range(255):
         if txt.count(chr(i)) != 0:
             dic[chr(i)] = txt.count(chr(i))
 
