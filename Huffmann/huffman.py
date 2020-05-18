@@ -38,11 +38,11 @@ class node:
         return self.char
 
 
-def read_text(fname):
-    probs = []
-    characters = []
+#def read_text(fname):
+#    probs = []
+#    characters = []
 
-    return probs, characters
+#    return probs, characters
 
 
 # Huffmann - Codierung
@@ -60,11 +60,12 @@ def read_text(fname):
 
 def huffman(probs):
     #########test value########
-    P = [0.05, 0.03, 0.17, 0.23, 0.01, 0.32, 0.19]
-    A = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    probs = dict(zip(A,P))
+    #P = [0.05, 0.03, 0.17, 0.23, 0.01, 0.32, 0.19]
+    #A = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
+    #probs = dict(zip(A, P))
     #########test value########
-    
+
     copy_probs = probs.copy()
     code = {}
     entropy = 0
@@ -79,45 +80,47 @@ def huffman(probs):
             new_node = node(items, probs.pop(items))
             heapq.heappush(heap, new_node)
 
-    # for keys in heap:
-    #     print(str(keys) + ": " + str(keys.freq))
+    for keys in heap:
+        print(str(keys) + ": " + str(keys.freq))
+
+    print("heap ist: " + str(heap))
 
     while len(heap) > 1:
-        left = heapq.heappop(heap)
         right = heapq.heappop(heap)
+        left = heapq.heappop(heap)
 
-        freq = left.freq+ right.freq
-        fused = node("None",freq)
+        freq = left.freq + right.freq
+        fused = node("None", freq)
         fused.setLeft(left)
         fused.setRight(right)
 
-        heapq.heappush(heap,fused)
+        heapq.heappush(heap, fused)
 
     recursive_get_code(heap[0], code, "")
 
     for key in code:
-        print(key + ": " + str(len(code[key])))
+        meanLength += copy_probs[key] * len(code[key])
 
     for prob in copy_probs.values():
         entropy += prob * -math.log2(prob)
 
-    len_of_values = map(lambda x: len(x), code.values())
+    for key in code:
+        print(key + ": " + str(code[key]))
 
-    meanLength = sum(len_of_values) / len(code)
-    print(entropy)
-    print(meanLength)
+    print("entropy ist: " + str(entropy))
+    print("Average wordlength ist: " + str(meanLength))
 
     return code, entropy, meanLength
 
 
 def recursive_get_code(root, code, current_code):
-    if (root == None): 
+    if root == None:
         return
 
     if (root.char != "None"):
         code[root.char] = current_code
         return
-    
+
     recursive_get_code(root.left, code, current_code + "0")
     recursive_get_code(root.right, code, current_code + "1")
 
@@ -137,7 +140,7 @@ def main():
         probability[keys] = dic.get(keys) / sum(dic.values())
 
     huffman(probability)
-    
+
 
 # code, entropy, meanLength = huffman(probs)
 
