@@ -96,14 +96,11 @@ def huffman(probs):
     recursive_get_code(heap[0], code, "")
 
     for key in code:
+        meanLength += copy_probs[key] * len(code[key])
         print(key + ": " + str(len(code[key])))
 
     for prob in copy_probs.values():
         entropy += prob * -math.log2(prob)
-
-    len_of_values = map(lambda x: len(x), code.values())
-
-    meanLength = sum(len_of_values) / len(code)
     print(entropy)
     print(meanLength)
 
@@ -123,7 +120,7 @@ def recursive_get_code(root, code, current_code):
 
 
 def main():
-    file = open("midsummer.txt", "r")
+    file = open("D:\htwg\MultiMedia\MultimediaUebung01\midsummer.txt", "r")
     txt = file.read()
     dic = {}
 
