@@ -51,7 +51,7 @@ def lzwDecode(input, dict):
     output = ""
     decodeDict = dict.copy()
     i = input[0]
-    output = output + "w"
+    output = output + decodeDict.get(int(i))
     found = False
     # todo this but clean
     codelen = 1
