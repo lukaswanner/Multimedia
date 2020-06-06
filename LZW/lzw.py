@@ -49,36 +49,31 @@ def lzwEncode(input):
 #               decodeDict:     Wörterbuch
 def lzwDecode(input, dict):
     output = ""
+    inputlist = input.split(" ")
     decodeDict = dict.copy()
-    i = input[0]
+    
+    i = inputlist[0]
     output = output + decodeDict.get(int(i))
-    found = False
-    # todo this but clean
-    codelen = 1
-    while codelen < len(input):
-        if input[codelen] != " ":
-            if codelen + 1 < len(input) and input[codelen + 1] != " ":
-                j = input[codelen] + input[codelen + 1]
-                codelen = codelen + 1
-            else:
-                j = input[codelen]
-            if int(j) in decodeDict.keys():
-                str1 = str(decodeDict.get(int(i)))
-                str2 = str(decodeDict.get(int(j))[0])
-                decodeDict[len(decodeDict) + 1] = str1 + str2
-                output = output + decodeDict.get(int(j))
-            else:
-                str1 = str(decodeDict.get(int(i)))
-                str2 = str(decodeDict.get(int(i))[0])
-                decodeDict[len(decodeDict) + 1] = str1 + str2
-                output = output + str1 + str2
-            i = j
-        codelen = codelen + 1
+    last_code = i
+   
+    for code in inputlist[1:]:
+        if int(code) in decodeDict.keys():
+            str1 = str(decodeDict.get(int(last_code)))
+            str2 = str(decodeDict.get(int(code))[0])
+            decodeDict[len(decodeDict) + 1] = str1 + str2
+            output = output + decodeDict.get(int(code))
+        else:
+            str1 = str(decodeDict.get(int(i)))
+            str2 = str(decodeDict.get(int(i))[0])
+            decodeDict[len(decodeDict) + 1] = str1 + str2
+            output = output + str1 + str2
+        last_code = code
+
     return output, decodeDict
 
 
 def main():
-    compressed, enDict, dict = lzwEncode('wabba wabba wabba wabba woo woo woo')
+    compressed, enDict, dict = lzwEncode('wabba test wabba woo wabba woo woo')
     print(compressed)
     print(dict)
     decompressed, deDict = lzwDecode(compressed, dict)
