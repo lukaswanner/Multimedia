@@ -32,18 +32,20 @@ def fft(inputSignal, nDeleteFreq, fftLength):
 
 def main(pieces):
     # output = fft()
-    output = fft(pieces[0],80000,len(pieces[0][1]))
-    scipy.io.wavfile.write("out.wav",16000,output)
-    print("")
+    output = fft(pieces[0],9000,len(pieces[0][1]))
+    print(output.dtype)
+    output = output.astype(int)
+    print(output.dtype)
+    scipy.io.wavfile.write("out.wav", 16000, output)
 
 
 if __name__ == "__main__":
-    data = wav.read("itu_male1.wav")
-    length = len(data[1])
+    wavinput = wav.read("itu_male1.wav")
+    length = len(wavinput[1])
     pieces = []
     i = 0
-    while i != len(data[1]):
-        pieces.append(data[i:i + length])
+    while i != len(wavinput[1]):
+        pieces.append(wavinput[i:i + length])
         i += length
     fig, axs = plt.subplots(2)
     fig.suptitle('Vertically stacked subplots')
