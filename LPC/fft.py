@@ -32,9 +32,9 @@ def fft(inputSignal, nDeleteFreq, fftLength):
 
 def main(pieces):
     # output = fft()
-    output = fft(pieces[0],9000,len(pieces[0][1]))
+    output = fft(pieces[0],100000,len(pieces[0][1]))
     print(output.dtype)
-    output = output.astype(int)
+    output = numpy.asarray(output,dtype=numpy.int16)
     print(output.dtype)
     scipy.io.wavfile.write("out.wav", 16000, output)
 
