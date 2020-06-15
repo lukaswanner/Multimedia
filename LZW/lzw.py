@@ -28,7 +28,7 @@ def lzwEncode(input):
         if not found:
             for i in range(len(encodeDict) + 1):
                 if s == encodeDict.get(i):
-                    output = output + str(i) + " "
+                    output = output + str(s) + " "
                     break
             encodeDict[len(encodeDict) + 1] = s + c
             s = c
@@ -52,10 +52,11 @@ def lzwDecode(input, dict):
     inputlist = input.split(" ")
     decodeDict = dict.copy()
     
-    i = inputlist[0]
-    output = output + decodeDict.get(int(i))
-    last_code = i
-   
+    last_code = inputlist[0]
+    output = output + decodeDict.get(int(last_code))
+
+
+   #j = code i = lastcode
     for code in inputlist[1:]:
         if int(code) in decodeDict.keys():
             str1 = str(decodeDict.get(int(last_code)))
@@ -63,8 +64,8 @@ def lzwDecode(input, dict):
             decodeDict[len(decodeDict) + 1] = str1 + str2
             output = output + decodeDict.get(int(code))
         else:
-            str1 = str(decodeDict.get(int(i)))
-            str2 = str(decodeDict.get(int(i))[0])
+            str1 = str(decodeDict.get(int(last_code)))
+            str2 = str(decodeDict.get(int(last_code))[0])
             decodeDict[len(decodeDict) + 1] = str1 + str2
             output = output + str1 + str2
         last_code = code
@@ -73,11 +74,23 @@ def lzwDecode(input, dict):
 
 
 def main():
-    compressed, enDict, dict = lzwEncode('wabba test wabba woo wabba woo woo')
+    compressed, enDict, dict = lzwEncode('aaaaaa')
     print(compressed)
-    print(dict)
+    print(enDict)
     decompressed, deDict = lzwDecode(compressed, dict)
     print(decompressed)
+
+    print("\n")
+    compressed = "1 2 4 3 5 8"
+    dict.clear()
+    dict[1] = "a"
+    dict[2] = "b"
+    dict[3] = "c"
+    print(compressed)
+    decompressed,deDict = lzwDecode(compressed,dict)
+    print(decompressed)
+    compressed,enDict,dict = lzwEncode(decompressed)
+    print(compressed)
 
 
 if __name__ == "__main__":
