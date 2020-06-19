@@ -13,41 +13,36 @@ import matplotlib.pyplot as plt
 
 
 def fft(inputSignal, nDeleteFreq, fftLength):
-    outputSignal = 0
-    arr = numpy.fft.fft(inputSignal[1])
-    arrabs = numpy.abs(arr)
-    #fig, axs = plt.subplots(2)
-    #fig.suptitle('Vertically stacked subplots')
-    #axs[0].plot(arr)
-    sortedarr = numpy.sort(arrabs)
-    for i in range(nDeleteFreq):
-        index = numpy.where(arrabs == sortedarr[i])
-        arr[index] = 0
-    #axs[1].plot(arr)
-    #plt.show()
-    outputSignal = numpy.fft.ifft(arr)
-    axs[1].plot(outputSignal)
-    plt.show()
+    outputSignal = []
+    blockcount = 10
+    loop = 0
+    while loop < fftLength:
+        arr = numpy.fft.fft(inputSignal[1][loop:loop + fftLength//blockcount])
+        arrabs = numpy.abs(arr)
+    
+        sortedarr = numpy.sort(arrabs)
+        for i in range(nDeleteFreq//blockcount):
+            index = numpy.where(arrabs == sortedarr[i])
+            arr[index] = 0
+    
+        outputSignal.extend(numpy.fft.ifft(arr))
+        loop += fftLength//blockcount
+        print(loop)
     return outputSignal
 
 def main(pieces):
-    # output = fft()
-    output = fft(pieces[0],100000,len(pieces[0][1]))
-    print(output.dtype)
+    output = fft(pieces[0],120000,len(pieces[0][1]))
     output = numpy.asarray(output,dtype=numpy.int16)
-    print(output.dtype)
     scipy.io.wavfile.write("out.wav", 16000, output)
 
 
 if __name__ == "__main__":
-    wavinput = wav.read("itu_male1.wav")
+    wavinput = wav.read("itu_female1.wav")
     length = len(wavinput[1])
     pieces = []
     i = 0
     while i != len(wavinput[1]):
         pieces.append(wavinput[i:i + length])
         i += length
-    fig, axs = plt.subplots(2)
-    fig.suptitle('Vertically stacked subplots')
-    axs[0].plot(pieces[0][1])
+
     main(pieces)
