@@ -10,6 +10,7 @@ import numpy
 import scipy.io.wavfile as wav
 import scipy.signal
 import matplotlib.pyplot as plt
+import scipy as sci
 
 
 def fft(inputSignal, nDeleteFreq, fftLength):
@@ -23,15 +24,16 @@ def fft(inputSignal, nDeleteFreq, fftLength):
         sortedarr = numpy.sort(arrabs)
         for i in range(nDeleteFreq//blockcount):
             index = numpy.where(arrabs == sortedarr[i])
+            """arr = numpy.delete(arr,index)"""
             arr[index] = 0
-    
+
         outputSignal.extend(numpy.fft.ifft(arr))
         loop += fftLength//blockcount
         print(loop)
     return outputSignal
 
 def main(pieces):
-    output = fft(pieces[0],120000,len(pieces[0][1]))
+    output = fft(pieces[0],10000,len(pieces[0][1]))
     output = numpy.asarray(output,dtype=numpy.int16)
     scipy.io.wavfile.write("out.wav", 16000, output)
 
