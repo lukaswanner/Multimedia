@@ -12,17 +12,19 @@ def jpegEncode(input):
     T[0,:] = np.sqrt(1/8)
 
     im = np.array(Image.open(input))
-    print(len(im))
+    pixellen = len(im)
+    numsub = pixellen // 8
 
     imglist = []
-    im[0:8][0:8]
-    for w in range(64):
-        print("w:",w)
-        for h in range(8):
-            print("h:",h)
-            imglist.append(im[w:w+8])
+    imgsplit = np.vsplit(im, numsub)
+    for row, val in enumerate(imgsplit):
+        for col in range(numsub):
+            print(row, col, ":")
+            print(val[:, col*8:(col+1)*8])
+            imglist.append(val[:, col*8:(col+1)*8])
+    print(len(imglist))
 
-    print(512//8)
+
     # Luminance quantization matrix
     q = [   [16, 11, 10, 16, 24, 40, 51, 61],
             [12, 12, 14, 19, 26, 58, 60, 55],
@@ -64,7 +66,7 @@ def jpegDecode(input):
     return output
 
 def main():
-    input = "baboon.jpg"
+    input = "house.jpg"
 
     encoded = jpegEncode(input)
     decoded = jpegDecode(encoded)
