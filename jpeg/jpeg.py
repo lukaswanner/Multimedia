@@ -1,6 +1,6 @@
 import numpy as np
-from scipy import fftpack as sci
 from PIL import Image
+
 # This function demonstrates the jpeg encoding
 #
 #   input  :   original image
@@ -18,22 +18,18 @@ def jpegEncode(input):
 
     imglist = []
     imgsplit = np.vsplit(im, numsub)
+
     for row, val in enumerate(imgsplit):
         for col in range(numsub):
             #print(row, col, ":")
             #print(val[:, col*8:(col+1)*8])
             imglist.append(val[:, col*8:(col+1)*8])
 
+
     dctlist = []
+
     for matrix in imglist:
-        #dctlist.append(np.dot(T,matrix))
-        dctlist.append(sci.dct(matrix))
-        for row in matrix:
-            x = 0
-            for i in range(len(T)):
-                row[i] * T[x][i]
-            x += 1
-        break
+        dctlist.append(np.dot(np.dot(T,matrix),np.transpose(T)))
 
     # Luminance quantization matrix
     q = [   [16, 11, 10, 16, 24, 40, 51, 61],
@@ -45,9 +41,11 @@ def jpegEncode(input):
             [49, 64, 78, 87, 103, 121, 120, 101],
             [72, 92, 95, 98, 112, 100, 103, 99]]
 
+    output = []
+    for matrix in dctlist:
+        output.append(np.divide(matrix,q))
 
-
-    output = 0
+    output = np.around(output,0)
 
     return output
 
@@ -59,7 +57,7 @@ def jpegDecode(input):
     # DCT matrix
     ar = np.array([range(8)])
     T = np.array(0.5 * np.cos(ar.T * (2 * ar + 1) * np.pi / 16))
-
+    T = np.linalg.inv(T)
     # Luminance quantization matrix
     q = [[16, 11, 10, 16, 24, 40, 51, 61],
          [12, 12, 14, 19, 26, 58, 60, 55],
@@ -70,8 +68,15 @@ def jpegDecode(input):
          [49, 64, 78, 87, 103, 121, 120, 101],
          [72, 92, 95, 98, 112, 100, 103, 99]]
 
+    dctlist = []
+    for matrix in input:
+        dctlist.append(np.multiply(matrix,q))
 
-    output = 0
+    output = []
+    for matrix in dctlist:
+        output.append(np.dot(np.dot(T,matrix),np.transpose(T)))
+
+    print(output[0][0])
 
     return output
 
