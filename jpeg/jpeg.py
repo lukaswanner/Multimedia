@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import fftpack as sci
 from PIL import Image
 # This function demonstrates the jpeg encoding
 #
@@ -19,11 +20,20 @@ def jpegEncode(input):
     imgsplit = np.vsplit(im, numsub)
     for row, val in enumerate(imgsplit):
         for col in range(numsub):
-            print(row, col, ":")
-            print(val[:, col*8:(col+1)*8])
+            #print(row, col, ":")
+            #print(val[:, col*8:(col+1)*8])
             imglist.append(val[:, col*8:(col+1)*8])
-    print(len(imglist))
 
+    dctlist = []
+    for matrix in imglist:
+        #dctlist.append(np.dot(T,matrix))
+        dctlist.append(sci.dct(matrix))
+        for row in matrix:
+            x = 0
+            for i in range(len(T)):
+                row[i] * T[x][i]
+            x += 1
+        break
 
     # Luminance quantization matrix
     q = [   [16, 11, 10, 16, 24, 40, 51, 61],
