@@ -45,6 +45,8 @@ def jpegEncode(input):
     for matrix in dctlist:
         output.append(np.divide(matrix, q))
 
+    output = np.round(output,0)
+
     return output
 
 
@@ -81,7 +83,6 @@ def jpegDecode(input):
 
 
     i = 0
-    switch = False
     newline = None
     xaxis = []
     for matrix in output:
@@ -92,7 +93,6 @@ def jpegDecode(input):
             newline = np.concatenate((newline, matrix), axis=1)
             if i % (np.sqrt(len(output))-1) == 0:
                 xaxis.append(newline)
-                print(len(newline[0]))
                 newline = None
 
     finished = np.concatenate(xaxis, axis=0)
