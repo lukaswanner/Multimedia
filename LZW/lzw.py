@@ -28,7 +28,7 @@ def lzwEncode(input):
         if not found:
             for i in range(len(encodeDict) + 1):
                 if s == encodeDict.get(i):
-                    output = output + str(s) + " "
+                    output = output + str(i) + " "
                     break
             encodeDict[len(encodeDict) + 1] = s + c
             s = c
@@ -51,12 +51,11 @@ def lzwDecode(input, dict):
     output = ""
     inputlist = input.split(" ")
     decodeDict = dict.copy()
-    
+
     last_code = inputlist[0]
     output = output + decodeDict.get(int(last_code))
 
-
-   #j = code i = lastcode
+    # j = code i = lastcode
     for code in inputlist[1:]:
         if int(code) in decodeDict.keys():
             str1 = str(decodeDict.get(int(last_code)))
@@ -74,23 +73,12 @@ def lzwDecode(input, dict):
 
 
 def main():
-    compressed, enDict, dict = lzwEncode('aaaaaa')
+    compressed, enDict, dict = lzwEncode('wabba wabba wabba wabba woo woo woo')
     print(compressed)
     print(enDict)
     decompressed, deDict = lzwDecode(compressed, dict)
     print(decompressed)
 
-    print("\n")
-    compressed = "1 2 4 3 5 8"
-    dict.clear()
-    dict[1] = "a"
-    dict[2] = "b"
-    dict[3] = "c"
-    print(compressed)
-    decompressed,deDict = lzwDecode(compressed,dict)
-    print(decompressed)
-    compressed,enDict,dict = lzwEncode(decompressed)
-    print(compressed)
 
 
 if __name__ == "__main__":
